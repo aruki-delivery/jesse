@@ -1,15 +1,13 @@
 defmodule Jesse.Mixfile do
   use Mix.Project
 
-  @elixir_vsn "~> 1.6"
-
-  @version "2.0.0"
+  @version "2.0.2"
 
   def project do
     [
       app: :jesse,
       version: @version,
-      elixir: @elixir_vsn,
+      language: :erlang,
       deps: deps(Mix.env()),
       description: "jesse (JSon Schema Erlang) is an implementation of a JSON Schema validator for Erlang.",
       package: package(),
@@ -37,7 +35,7 @@ defmodule Jesse.Mixfile do
   defp deps(_) do
     [
       {:json, "~> 1.2"},
-      {:egithub, github: "aruki-delivery/erlang-github", tag: "2.0.0", override: true, only: :dev},
+      {:egithub, github: "aruki-delivery/erlang-github", tag: "2.0.1", override: true, only: :test},
       {:rfc3339, "~> 0.9.0"},
       {:flex_logger, "~> 0.2.1"},
       {:elvis_shell, "~> 0.4.1", hex: :elvis, only: [:test]},

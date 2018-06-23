@@ -1,6 +1,6 @@
 %%-*- mode: erlang -*-
 { application, jesse, [ {description, "jesse (JSon Schema Erlang) is an implementation of a JSON Schema validator for Erlang."}
-                      , {vsn, "2.0.0"}
+                      , {vsn, "2.0.2"}
                       , {modules, []}
                       , {registered, []}
                       , {applications, [ kernel
