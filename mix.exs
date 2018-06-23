@@ -3,7 +3,7 @@ defmodule Jesse.Mixfile do
 
   @elixir_vsn "~> 1.6"
 
-  @version "2.0.0-SNAPSHOT"
+  @version "2.0.0"
 
   def project do
     [
@@ -27,9 +27,10 @@ defmodule Jesse.Mixfile do
         :flex_logger,
         :kernel,
         :stdlib,
+        :rfc3339,
         :json,
-        :jesse
-      ]
+      ],
+      mod: []
     ]
   end
 
@@ -39,7 +40,7 @@ defmodule Jesse.Mixfile do
       {:egithub, github: "aruki-delivery/erlang-github", tag: "2.0.0", override: true, only: :dev},
       {:rfc3339, "~> 0.9.0"},
       {:flex_logger, "~> 0.2.1"},
-      {:elvis_shell, "~> 0.4.1", hex: :elvis, only: :dev},
+      {:elvis_shell, "~> 0.4.1", hex: :elvis, only: [:test]},
       {:dialyxir, "~> 0.5", only: :dev, runtime: false},
       {:ex_doc, ">= 0.0.0", only: :dev},
       {:ex_unit_notifier, "~> 0.1", only: :test},

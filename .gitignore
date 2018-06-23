@@ -19,4 +19,5 @@
 .idea/
 _build/
 *.iml
+log/
 

@@ -71,7 +71,7 @@
 -type external_validator() :: fun((json_term(), any()) -> any())
                            | undefined.
 
--type json_term() :: term().
+-type json_term() :: any().
 
 -type parser_fun() :: fun((json_term() | binary()) -> json_term()).
 
