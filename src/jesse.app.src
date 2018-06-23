@@ -1,17 +1,17 @@
 %%-*- mode: erlang -*-
 { application, jesse, [ {description, "jesse (JSon Schema Erlang) is an implementation of a JSON Schema validator for Erlang."}
-                      , {vsn, git}
+                      , {vsn, "2.0.0-SNAPSHOT"}
                       , {modules, []}
                       , {registered, []}
                       , {applications, [ kernel
                                        , stdlib
-                                       , jsx
+                                       , json
                                        , rfc3339
                                        ]}
-                      , {maintainers, [ "for-GET/jesse"
+                      , {maintainers, [ "aruki-delivery/jesse"
                                       ]}
                       , {licenses, [ "Apache 2.0"
                                    ]}
-                      , {links, [ {"Github", "https://github.com/for-GET/jesse"}
+                      , {links, [ {"Github", "https://github.com/aruki-delivery/jesse"}
                                 ]}
                       ]}.

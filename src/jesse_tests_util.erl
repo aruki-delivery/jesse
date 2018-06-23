@@ -44,7 +44,7 @@ get_tests(RelativeTestsDir, DefaultSchema) ->
   TestFiles = filelib:wildcard(TestsDir ++ "/*.json"),
   lists:map( fun(TestFile) ->
                  {ok, Bin} = file:read_file(TestFile),
-                 Tests = jsx:decode(Bin),
+                 Tests = 'Elixir.JSON':'decode!'(Bin),
                  Key = testfile_to_key(TestFile),
                  Config = {Tests, DefaultSchema},
                  {Key, Config}
@@ -124,4 +124,4 @@ get_path(Key, Schema) ->
 load_schema(URI) ->
   {ok, Response} = httpc:request(get, {URI, []}, [], [{body_format, binary}]),
   {{_Line, 200, _}, _Headers, Body} = Response,
-  jsx:decode(Body).
+  'Elixir.JSON':'decode!'(Body).

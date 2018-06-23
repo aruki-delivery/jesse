@@ -63,17 +63,17 @@ run(Options, [Schema|_] = Schemata, [JsonInstance|JsonInstances]) ->
                , {result, ok}
                ];
              {error, Reasons} ->
-               JsxReasons = lists:map(fun jesse_error:reason_to_jsx/1, Reasons),
+               JsonReasons = lists:map(fun jesse_error:reason_to_json_obj/1, Reasons),
                [ {filename, list_to_binary(JsonInstance)}
                , {result, error}
-               , {errors, JsxReasons}
+               , {errors, JsonReasons}
                ]
            end,
   case proplists:get_value(json, Options) of
     undefined ->
       io:fwrite("~p\n\n", [Result]);
     true ->
-      io:fwrite("~s\n\n", [jsx:encode(Result)])
+      io:fwrite("~s\n\n", ['Elixir.JSON':'encode!'(Result)])
   end,
   case JesseResult of
     {ok, _} ->
@@ -88,15 +88,13 @@ jesse_run(JsonInstance, Schema, Schemata) ->
   %% Don't use application:ensure_all_started(jesse)
   %% nor application:ensure_started(_)
   %% in order to maintain compatibility with R16B01 and lower
-  ok = ensure_started(jsx),
+  ok = ensure_started(json),
   ok = ensure_started(rfc3339),
   ok = ensure_started(jesse),
   ok = add_schemata(Schemata),
   {ok, JsonInstanceBinary} = file:read_file(JsonInstance),
-  JsonInstanceJsx = jsx:decode(JsonInstanceBinary),
-  jesse:validate( Schema
-                , JsonInstanceJsx
-                ).
+  JsonInstanceDecoded = 'Elixir.JSON':'decode!'(JsonInstanceBinary),
+  jesse:validate(Schema, JsonInstanceDecoded).
 
 ensure_started(App) ->
   case application:start(App) of
@@ -110,7 +108,7 @@ add_schemata([]) ->
   ok;
 add_schemata([SchemaFile|Rest]) ->
   {ok, SchemaBin} = file:read_file(SchemaFile),
-  Schema0 = jsx:decode(SchemaBin),
+  Schema0 = 'Elixir.JSON':'decode!'(SchemaBin),
   Schema = maybe_fill_schema_id(SchemaFile, Schema0),
   ok = jesse:add_schema(SchemaFile, Schema),
   add_schemata(Rest).

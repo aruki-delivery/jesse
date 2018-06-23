@@ -27,8 +27,7 @@
         , handle_data_invalid/3
         , handle_schema_invalid/2
         , to_json/1
-        , to_json/2
-        , reason_to_jsx/1
+        , reason_to_json_obj/1
         ]).
 
 -export_type([ error/0
@@ -96,31 +95,30 @@ handle_schema_invalid(Info, State) ->
           },
   handle_error(Error, State).
 
-%% @doc Convert an error to a JSON string using jsx
+%% @doc Convert an error to a JSON string using Elixir-JSON
 -spec to_json(Error :: error()) -> binary().
+to_json({error, Reasons}) ->
+  JsonReasons = lists:map(fun reason_to_json_obj/1, Reasons),
+  'Elixir.JSON':'encode!'([{reasons, JsonReasons}]);
+
 to_json(Error) ->
-  to_json(Error, [indent]).
+  to_json(Error).
 
-%% @doc Convert an error to a JSON string using jsx
--spec to_json(Error :: error(), JsxOptions :: [atom()]) -> binary().
-to_json({error, Reasons}, JsxOptions) ->
-  JsxReasons = lists:map(fun reason_to_jsx/1, Reasons),
-  jsx:encode([{reasons, JsxReasons}], JsxOptions).
 
-%% @doc Convert an error reason to jsx structs
--spec reason_to_jsx(Reason :: error_reason()) -> jesse:json_term().
-reason_to_jsx({?schema_invalid, Schema, {Error, ErrorDetails}}) ->
+%% @doc Convert an error reason to Elixir-JSON structs
+-spec reason_to_json_obj(Reason :: error_reason()) -> jesse:json_term().
+reason_to_json_obj({?schema_invalid, Schema, {Error, ErrorDetails}}) ->
   [ {invalid, schema}
   , {schema, Schema}
   , {error, Error}
   , {error_details, ErrorDetails}
   ];
-reason_to_jsx({?schema_invalid, Schema, Error}) ->
+reason_to_json_obj({?schema_invalid, Schema, Error}) ->
   [ {invalid, schema}
   , {schema, Schema}
   , {error, Error}
   ];
-reason_to_jsx({?data_invalid, Schema, {Error, ErrorDetails}, Data, Path}) ->
+reason_to_json_obj({?data_invalid, Schema, {Error, ErrorDetails}, Data, Path}) ->
   [ {invalid, data}
   , {schema, Schema}
   , {error, Error}
@@ -128,7 +126,7 @@ reason_to_jsx({?data_invalid, Schema, {Error, ErrorDetails}, Data, Path}) ->
   , {data, Data}
   , {path, Path}
   ];
-reason_to_jsx({?data_invalid, Schema, Error, Data, Path}) ->
+reason_to_json_obj({?data_invalid, Schema, Error, Data, Path}) ->
   [ {invalid, data}
   , {schema, Schema}
   , {error, Error}

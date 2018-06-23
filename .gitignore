@@ -16,3 +16,7 @@
 /test/elvis_warnings
 /test/*.beam
 .#*
+.idea/
+_build/
+*.iml
+

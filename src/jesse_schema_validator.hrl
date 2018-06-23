@@ -21,12 +21,6 @@
 %% @end
 %%%=============================================================================
 
-%% Maps conditional compilation
--ifdef(erlang_deprecated_types).
--define(IF_MAPS(Exp), ).
--else.
--define(IF_MAPS(Exp), Exp).
--endif.
 
 %% Constant definitions for Json schema keywords
 -define(SCHEMA,               <<"$schema">>).

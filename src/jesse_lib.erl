@@ -42,7 +42,7 @@ empty_if_not_found(Value) ->
   Value.
 
 %% @doc Checks if the given value is json `array'.
-%% This check is needed since objects in `jsx' are lists (proplists).
+%% This check is needed since objects in `Elixir-JSON' are lists (proplists).
 -spec is_array(Value :: any()) -> boolean().
 is_array(Value)
   when is_list(Value) ->
@@ -55,20 +55,18 @@ is_array(_) ->
 %% 1) mochijson2 format (`{struct, proplist()}')
 %% 2) jiffy format (`{proplist()}')
 %% 3) jsx format (`[{binary() | atom(), any()}]')
+%% 4) Elixir-JSON format - Elixir Map(`[{binary() | atom(), any()}]')
 %% Returns `true' if the given data is an object, otherwise `false' is returned.
 -spec is_json_object(Value :: any()) -> boolean().
-?IF_MAPS(
 is_json_object(Map)
   when erlang:is_map(Map) ->
   true;
-)
 is_json_object({struct, Value})
   when is_list(Value) ->
   true;
 is_json_object({Value})
   when is_list(Value) ->
   true;
-%% handle `jsx' empty objects
 is_json_object([{}]) ->
   true;
 %% very naive check. checks only the first element.

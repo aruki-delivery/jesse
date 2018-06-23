@@ -172,7 +172,7 @@ path_default_test() ->
        [{foo, bar}],
        jesse_json_path:path([foo, bar], [], [{foo, bar}])).
 
-jsx_object_test() ->
+json_object_test() ->
     ?assertEqual(
        not_found,
        jesse_json_path:value(<<"foo">>, [{}], not_found)).

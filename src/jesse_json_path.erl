@@ -6,18 +6,13 @@
 -module(jesse_json_path).
 -export([parse/1, path/2, path/3, value/3, to_proplist/1, unwrap_value/1]).
 
--ifdef(erlang_deprecated_types).
--type kvc_obj_node() :: proplist() | {struct, proplist()} | [{}] | dict()
-                      | gb_tree() | term().
--type typed_proplist() :: {proplist() | {gb_tree, gb_tree()}, elem_type()}.
--define(IF_MAPS(Exp), ).
--else.
+
 -type kvc_obj_node() :: proplist() | {struct, proplist()} | [{}] | dict:dict()
                       | gb_trees:tree() | map() | term().
 -type typed_proplist() :: {proplist() | {gb_tree, gb_trees:tree()}
                            | {map, map()}, elem_type()}.
--define(IF_MAPS(Exp), Exp).
--endif.
+-define(Exp, Exp).
+
 
 -type elem_key_type() :: atom | binary | string | undefined.
 -type elem_type() :: list | elem_key_type().
@@ -57,13 +52,13 @@ path([K | Rest], P, Default) ->
 -spec value(kvc_key(), kvc_obj(), term()) -> term().
 value(K, P, Default) ->
   case proplist_type(P) of
-    ?IF_MAPS({{map, Map}, Type} ->
+    {{map, Map}, Type} ->
                 case maps:find(normalize(K, Type), Map) of
                   error ->
                     Default;
                   {ok, V} ->
                     V
-                end;)
+                end;
     {Nested, list} ->
       R = make_ref(),
       case get_nested_values(K, Nested, R) of
@@ -123,9 +118,9 @@ to_proplist(T) ->
      fun identity/1], T).
 
 %% @doc Unwrap data (remove mochijson2 and jiffy specific constructions,
-%% and also handle `jsx' empty objects)
+%% and also handle empty objects)
 -spec unwrap_value(kvc_obj()) -> kvc_obj().
-?IF_MAPS(unwrap_value(Map) when erlang:is_map(Map) -> maps:to_list(Map);)
+unwrap_value(Map) when erlang:is_map(Map) -> maps:to_list(Map);
 unwrap_value({struct, L}) -> L;
 unwrap_value({L}) -> L;
 unwrap_value({}) -> [];
@@ -135,13 +130,8 @@ unwrap_value(L) -> L.
 
 %% Internal API
 
--ifdef(erlang_deprecated_types).
-to_proplist_map(_) ->
-  throw(erlang_deprecated_types).
--else.
 to_proplist_map(Map) ->
   to_proplist_pl(maps:to_list(Map)).
--endif.
 
 to_proplist_l(L) ->
   [to_proplist(V) || V <- L].
@@ -229,14 +219,9 @@ proplist_type_gb(D) ->
   {K, _V} = gb_trees:smallest(D),
   {{gb_tree, D}, typeof_elem(K)}.
 
--ifdef(erlang_deprecated_types).
-proplist_type_map(_) ->
-  throw(erlang_deprecated_types).
--else.
 proplist_type_map(D) ->
   [K | _] = maps:keys(D),
   {{map, D}, typeof_elem(K)}.
--endif.
 
 proplist_type_undefined(_) ->
   {[], undefined}.
